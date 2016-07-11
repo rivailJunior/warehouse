@@ -3,10 +3,29 @@
     var arrayPallets = [];
     var arrayMasters = [];
     var panelHeader = []; 
+    var valorTotal = [];
     //verifica se o item ja existe no array
     var verifyItem  = function(item, array) {
         return array.includes(item);
     }//fim
+     
+    //insere valor
+    function updateValorTotal(valor){
+        //console.log('valor ' , valor);
+        if(verifyItem(valor, valorTotal) == false) {
+            valorTotal.push(valor);
+        }
+        return valorTotal;
+    }//function
+     
+    //retorna valor total do pallet
+    function totalValuePallets(){
+       var valor = 0;
+       for(index in valorTotal){
+            valor = parseFloat(valorTotal[index])+valor;
+       }
+       return valor;
+    };//fim
 
     //adiciona items no array de master
     function addMasters(master, pallet) {          
@@ -28,7 +47,7 @@
             arrayPallets.push(item); 
             panelHeader.push(item);
         }
-        console.log(arrayPallets);
+       // console.log(arrayPallets);
         return arrayPallets;
     }//fim function 
 

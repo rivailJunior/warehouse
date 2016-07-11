@@ -3,14 +3,13 @@
    //printa cabecalho do panel caso o pallet ja tenha sido incluido por completo
     var printPanel = function(item){
         if(panelHeader.includes(item) == true){
-            $('.panel-heading').css('background-color', '#337ab7');
+            $('.panel-heading').css('background-color', '#5cb85c');
             $('.panel-heading a').css('color', 'white');
             $('.btnAddMaster').hide();
         }
     }//fim
 
     $(document).ready(function (){
-        
         //retorna o pallet do qual o panel pertence
         var item =  $('.panel-group').attr("id").split('_')[1];
         printPanel(item);

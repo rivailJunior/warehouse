@@ -68,6 +68,14 @@
 			}
 			$this->load->view('ware/modalcontainer', $this->data);
 		}//fim
+		 
+        
+		public function getValuePallet()
+		{
+			$pallet = $this->input->post('pallet');
+			$valor = $this->warehousemodel->getPalletValue($pallet);
+			echo $valor->row()->total;
+		}
 
 	}//fim class
 

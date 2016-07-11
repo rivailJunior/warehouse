@@ -1,5 +1,23 @@
  <script type="text/javascript">
-    $(document).ready(function (){
+
+    function getValuePallet(id, callback) {
+        var valor = null;
+        $.ajax({
+            url:"<?php echo site_url('warecontroller/getValuePallet')?>",
+            type:"post",
+            data:{
+                'pallet':id
+            },
+            success:function (res){
+                callback(res);
+            },
+            error:function(err){
+                console.log("error", err);
+            }
+        });
+    };//fim
+      
+    $(document).ready(function () {
         
         $(".getPallets").click(function () {
             var link = $(this).attr('href');
@@ -10,8 +28,19 @@
         });
 
         $(".btnincluir").click(function (){
+            var row = $(this).closest('tr').index();
+            $(this).removeClass('btn-primary');
+            $(this).addClass('btn-success');
             var pallet = $(this).attr("id");
             var total = addPallets(pallet);
+            
+            getValuePallet(pallet, function (res) {
+                updateValorTotal(res);
+                var valorAtualizado = totalValuePallets();
+                console.log('valorAtualizado ' , valorAtualizado);
+                $("#totalValue").html("<h3>Total R$: "+parseFloat(valorAtualizado)+"</h3>");
+            });
+           
             
         });
     });
@@ -36,7 +65,7 @@
             <td>
                 <?php echo $row->total_master;?></td>
             <td style="width:250px">
-                <a class="btn btn-success getPallets" 
+                <a class="btn btn-primary getPallets" 
                 href="<?php echo site_url('warecontroller/getInfoPallets/'.$row->pallet);?>">
                     <i class="glyphicon glyphicon-zoom-in"></i> Ver
                 </a>
@@ -50,8 +79,7 @@
     </tbody>
     <tfoot>
         <th class="bg-info " colspan="3">
-            <span class="pull-right"> 00:00</span>
-            <span class="pull-right">Valor total R$:</span>
+            <span class="pull-right" id="totalValue"><h3>Total R$: 00,00</h3></span>
         </th>
         <th colspan="1">
             <button type=""  class="btn btn-success btn-lg ">Finalizar</button>

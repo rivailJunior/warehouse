@@ -95,6 +95,11 @@
 			return $this->db->query($sqlfinal);
 		}//fim
 
+		/**
+		* @author rivail santos
+		* return the master and products info by the pallet id
+		* @param $id - pallet id
+		*/
 		public function getPalletInfo($id)
 		{
 
@@ -108,21 +113,23 @@
             $this->db->where('m.status_id ', 2);
             $this->db->where('m.pallet_id ', $id);
             return $this->db->get();
-			/*
-			$sql = "select 
-					m.code as master_code,
-					m.id as master,
-					w.label as warehouse
-					from master m
-					inner join warehouse w on 
-						w.id = m.warehouse_current";
-			if(isset($id)) {
-				$where = " where p.status_id = 2 and m.pallet_id = ".$id;
+		}//fim
+		 
+		/**
+		* @author rivail santos
+		* retunr the total value of the pallet products
+		* @param $pallet - pallet id
+		*/
+		public function getPalletValue($pallet)
+		{
 
-				return $this->db->query($sql);
-			} else {
-				return false;
-			}*/
+	 		$this->db->select('sum(p.unitary_price) as total');
+	 		$this->db->from('master m');
+	 		$this->db->join('imei i', 'i.master_id = m.id');
+	 		$this->db->join('product p', 'p.id = i.product_id');
+	 		$this->db->where('m.pallet_id', $pallet);
+	 		$this->db->where('m.status_id', 2);
+	 		return $this->db->get();
 		}//fim
 
 	}//fim class
