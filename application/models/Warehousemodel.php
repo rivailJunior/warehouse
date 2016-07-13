@@ -90,7 +90,7 @@
 			(select count(*) from master m where m.pallet_id = p.id) as total_master
 			from warehouse w
 			inner join pallet p on p.warehouse_current = w.id";
-			$where = $ware != null ? "where w.id = ".$ware : " ";
+			$where = $ware != null ? "where p.status_id = 2 and w.id = ".$ware : " where p.status_id = 2 ";
 			$sqlfinal = $sql." ".$where;
 			return $this->db->query($sqlfinal);
 		}//fim
@@ -122,7 +122,6 @@
 		*/
 		public function getPalletValue($pallet)
 		{
-
 	 		$this->db->select('sum(p.unitary_price) as total');
 	 		$this->db->from('master m');
 	 		$this->db->join('imei i', 'i.master_id = m.id');
@@ -138,28 +137,34 @@
 		* @param $local - ['current', 'destiny']
 		* updates all values from pallet, passing by masters and imeis
 		*/
-		public function updateAllByPallet($idpallet, $local)
+		public function updateAllByPallet($idpallet, $local, $objeto = null)
 		{
 			//start the transaction
 			$this->db->trans_begin();
-			
+
+				//update pallet
 				$this->db->where('id', $idpallet);
-				$response = $this->db->update('pallet', $pallet);
+				$pallet['status_id'] = 1;
+				$pallet['warehouse_current'] = $local['current'];
+				$pallet['warehouse_destiny'] = $local['destiny'];
+				$this->db->update('pallet', $pallet);
 				
+				//update master
 				//generate update to all master where pallet_id = $idpallet;
-				$updateMaster = "update master set warehouse_current = ".$local['current'].", 
-								warehouse_destiny = ".$local['destiny']." where pallet_id = ".$idPallet;
+				$updateMaster = "update master set warehouse_current = ".$local['current'].", status_id = 1,
+								warehouse_destiny = ".$local['destiny']." where pallet_id = ".$objeto['pallet_id'];
 				$masterResponse = $this->db->query($updateMaster);
 				
+				//update imei
 				//get all master by the $idpallet
-				$masters = $this->db->get_where('master', array('pallet_id'=>$idpallet));
-				
+				$masterlist = $this->db->get_where('master', array('pallet_id'=>$objeto['pallet_id']));
 				//generate update to all imeis by each master_id
-				foreach ($master->result() as $index => $row) {
-					$master['warehouse_current'] = $local['current'];
-					$master['warehouse_destiny'] = $local['destiny'];
+				$imei['warehouse_current'] = $local['current'];
+				$imei['warehouse_destiny'] = $local['destiny'];	
+				$imei['status_id'] = 1;
+				foreach ($masterlist->result() as $index => $row) {
 					$this->db->where('master_id', $row->id);
-					$this->db->update('imei', $master);
+					$this->db->update('imei', $imei);
 				}
 
 			$this->db->trans_complete();
@@ -189,6 +194,65 @@
 			$this->db->where('warehouse_target_id', $objeto['destino']);
 			return $this->db->get();
 		}//fim
+
+		/**
+		* @author rivail santos
+		* generate the logs
+		*/
+		public function generateLog($objeto)
+		{	
+			$this->db->insert('transfer_log', $objeto);
+			$idLastLog = $this->db->insert_id();
+			return $idLastLog;
+		}//fim function
+
+		/**
+		* @author rivail santos
+		* generate all logs 
+		*/
+		public function generateAllLogs($objeto, $pallet)
+		{
+			$this->db->trans_begin();
+				//gera log para o pallet
+				$pallet_log['id_log'] = $objeto['id_log'];
+				$pallet_log['created_at'] = $objeto['created_at'];
+				$pallet_log['id_pallet'] = $objeto['pallet_id'];
+				$this->db->insert('transfer_log_pallet', $pallet_log);
+				$idpalletlog = $this->db->insert_id();
+
+				$masterList = $this->db->get_where('master', array('pallet_id' => $objeto['pallet_id']));
+				foreach ($masterList->result() as $index => $master) {
+					//gera o log para o master
+					$master_log['id_master'] = $master->id;
+					$master_log['id_log_pallet'] = $idpalletlog;
+					$master_log['created_at'] = $objeto['created_at'];
+					$idmasterlog = $this->db->insert('transfer_log_master', $master_log);
+
+					$listImeis = $this->db->get_where('imei', array('master_id'=>$row->id));
+					foreach ($listImeis->result() as $position => $imei) {
+						//gera log para o imei
+						$imei_log['id_log_master'] = $idmasterlog;
+						$imei_log['id_imei'] = $imei->id;
+						$imei_log['created_at'] = $objeto['created_at'];	
+						$this->db->insert('transfer_log_imei', $imei_log);	
+					}
+				}
+
+			$this->db->trans_complete();
+			
+			if($this->db->trans_status() != FALSE)
+			{
+				$this->db->trans_commit();
+				return true;
+			}	
+			else
+			{
+				 $this->db->trans_rollback();
+				return false;
+			}
+			
+		}//fim
+		
 
 	}//fim class
 

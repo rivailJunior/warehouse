@@ -32,30 +32,41 @@
 
         //insert the current index pallet in the array
         $(".btnincluir").click(function (){
-            var elemento = $(this);
-            var row = $(this).closest('tr').index();
-            var pallet = $(this).attr("id");
-            var total = addPallets(pallet);
+            var elemento = $(this),
+            row = $(this).closest('tr').index(),
+            pallet = $(this).attr("id");
+            
+            //adiciona item no arrayPallet
+            addPallets(pallet);
+        
             getValuePallet(pallet, function (res) {
                 updateValorTotal(res);
                 var valorAtualizado = totalValuePallets();
-                console.log('valorAtualizado ' , valorAtualizado);
-                       
                 //if response value is bigger the limite value can do nothing
-                if(valorAtualizado < valorLimite){
+                if(valorAtualizado < valorLimite) {
                     $(elemento).removeClass('btn-primary');
                     $(elemento).addClass('btn-success');
+                    $("#totalValue").html("<h3>Total R$: "+parseFloat(valorAtualizado)+"</h3>"); 
                     
-                    $("#totalValue").html("<h3>Total R$: "+parseFloat(valorAtualizado)+"</h3>");   
-
-                   
                 } else {  
                     $("#divInfoLimite").show('slow', function (){
                         $(this).html('O valor total dos pallets R$: '+ valorAtualizado + 
                             " ultrapassa o valor limite do trajeto selecionado R$: "+valorLimite);
                     });
+                    //remove esse item do arrayPallet
+                    removeItemArrayPallet(pallet); 
                 }
             });
+        });
+
+        $("#btFinalizar").click(function (){
+            var destino = $('.destino').val(),
+            origem = $('.origem').val();
+            if((origem == 0) || (destino == 0) || (origem == destino)){
+                alert('verifique origem e destino');
+            }else{
+                realizarTransferencias(origem, destino);
+            }
         });
     });
 </script>
@@ -96,7 +107,7 @@
             <span class="pull-right" id="totalValue"><h3>Total R$: 00,00</h3></span>
         </th>
         <th colspan="1">
-            <button type=""  class="btn btn-success btn-lg ">Finalizar</button>
+            <button type="" id="btFinalizar"  class="btn btn-success btn-lg ">Finalizar</button>
         </th>
     </tfoot>
 </table>

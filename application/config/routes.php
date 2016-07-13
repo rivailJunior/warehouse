@@ -86,8 +86,8 @@ log_message('info', 'routs em config');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-//$route['default_controller'] = 'logincontroller';
-$route['default_controller'] = 'warecontroller';
+$route['default_controller'] = 'logincontroller';
+//$route['default_controller'] = 'warecontroller';
 $route['404_override'] = '';
 //$route['translate_uri_dashes'] = FALSE;
 

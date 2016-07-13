@@ -1,15 +1,8 @@
 <?php
 
 	/**
-	* 
-	Controller diferente dos demais, pois inicia uma sessao de acesso ao sistema,
-	na index recebemos os dados vindo da View login, validando todos os campos usando a
-	funcao nativa do framework(Form_validation), nota-se que no set_rules -tbm nativo- temos
-	uma funcao (callback_) -que chama outra funcao dentro do controlador, passando como parametro
-	o campo na qual ela esta sendo chamada(senha)- essa funcao esta chamando o (checklogin),
-	na qual fazemos a conexao com o Model M_administrador e verificamos se existe dados no banco
-	referente aos dados passado pelo usuario, as demais funcoes servem para mostrar o erro de login
-	tao como sair da sessao.
+	* @author rivail santos
+	* controller de login de usuario
 	*/
 	class Logincontroller extends CI_Controller
 	{	
@@ -22,8 +15,6 @@
 			$this->load->model('administradormodel');
 			$this->load->helper(array('form', 'url','date'));
 		}
-
-		
 
 		function index() 
 		{
@@ -39,8 +30,6 @@
 			else
 			{
 				redirect('/warecontroller/');
-				//$this->load->view('welcome_message');
-				//print_r($this->session->cookie->userdata['usuariologado']);
 			}
 		}//fim da function
 		

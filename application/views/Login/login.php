@@ -8,19 +8,17 @@
     <!-- Fonts -->
     <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
-    <!-- CSS Libs -->
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/css/animate.min.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/css/bootstrap-switch.min.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/css/checkbox3.min.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/css/dataTables.bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/css/select2.min.css">
-    <!-- CSS App -->
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('/assets/flatadmin/') ?>/css/style.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('/assets/flatadmin/') ?>/css/themes/flat-blue.css">
-  
+    <title>Warehousing System</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="<?php echo base_url('/assets/bootstrap/css/bootstrap.min.css') ?>" rel="stylesheet">
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="<?php echo base_url('/assets/js/jquery-1.10.2.min.js') ?>"></script>
+    <script src="<?php echo base_url('/assets/bootstrap/js/bootstrap.min.js ') ?>"></script>
+    
 </head>
 
 <body class="flat-blue login-page">
@@ -80,19 +78,6 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="<?php echo base_url('/assets/flatadmin/dist/lib/js/bootstrap.min.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/js/Chart.min.js"></script>
-    <script type="text/javascript" src="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/js/bootstrap-switch.min.js"></script>
-    <script type="text/javascript" src="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/js/jquery.matchHeight-min.js"></script>
-    <script type="text/javascript" src="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/js/dataTables.bootstrap.min.js"></script>
-    <script type="text/javascript" src="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/js/select2.full.min.js"></script>
-    <script type="text/javascript" src="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/js/ace/ace.js"></script>
-    <script type="text/javascript" src="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/js/ace/mode-html.js"></script>
-    <script type="text/javascript" src="<?php echo base_url('/assets/flatadmin/') ?>/dist/lib/js/ace/theme-github.js"></script>
-    <!-- Javascript -->
-    <script type="text/javascript" src="<?php echo base_url('/assets/flatadmin/') ?>/dist/js/app.js"></script>
-    <script type="text/javascript" src="<?php echo base_url('/assets/flatadmin/') ?>/dist/js/card.js"></script>
-</body>
+  </body>
 
 </html>

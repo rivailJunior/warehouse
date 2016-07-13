@@ -15,6 +15,9 @@
 		{
 			parent::__construct();
 			$this->load->model('warehousemodel');
+			if(!isset($this->session->userdata('usuariologado'))){
+				redirect('/logincontroller/logout_user');
+			}
 		}
 		
 		public $data = array();
@@ -24,6 +27,7 @@
 		*/
 		public function index($id = null)
 		{
+			print_r($this->session->userdata('usuariologado'));
 			$this->data['warehouses'] = $this->db->get('warehouse');
 			$this->load->view('index', $this->data);
 			$this->load->view('ware/index', $this->data);
@@ -81,7 +85,9 @@
 			echo $valor->row()->total;
 		}//fim
 
-
+		/***
+		* return the limit of transport between two warehouses
+		*/
 		public function getLimitByWare()
 		{
 			$destino = $this->input->post('destino');
@@ -95,6 +101,39 @@
 					$response = $this->warehousemodel->returnLimits($objeto);
 					echo $response->row()->limite;	
 				}
+			}
+		}//fim
+
+		public function finishTransfer()
+		{
+			$origem = $this->input->post('origem');
+			$destino = $this->input->post('destino');
+			$pallets = $this->input->post('pallets');
+			
+			$objeto['created_at'] = date('y-m-d');
+			$objeto['current'] = $origem;
+			$objeto['destiny'] = $destino;
+			
+			//objeto para criacao de log
+			$log['descricao'] = "Log para teste itriad system";
+			$log['id_usuario'] = 1;
+			$log['acao'] = "Transferencia de carga";
+			$log['created_at'] = $objeto['created_at'];
+			$log['id_origem'] = $objeto['current'];
+			$log['id_destino'] = $objeto['destiny'];
+			$idlog = $this->warehousemodel->generateLog($log);
+			
+			$local['current'] = $objeto['current'];
+			$local['destiny'] = $objeto['destiny'];
+			
+			foreach ($pallets as $index => $pallet) {
+				$objeto['pallet_id'] = $pallet; 
+				$objeto['id_log'] = $idlog;
+				$return = $this->warehousemodel->updateAllByPallet($pallet, $local, $objeto);
+				echo $return;
+			}
+			foreach ($pallets as $index => $pallet) {
+				$logs = $this->warehousemodel->generateAllLogs($objeto, $pallet);
 			}
 		}//fim
 

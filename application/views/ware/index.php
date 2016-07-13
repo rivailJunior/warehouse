@@ -9,6 +9,24 @@
     var verifyItem  = function(item, array){
         return array.includes(item);
     }//fim
+
+    function realizarTransferencias(origem, destino) {
+        $.ajax({
+            url:"<?php echo site_url('warecontroller/finishTransfer')?>",
+            type:"post",
+            data:{
+                'pallets': arrayPallets,
+                'origem': origem,
+                'destino':destino
+            },
+            success:function (res){
+                console.log("res", res);
+            },
+            error:function(err){
+                console.log("err", err);
+            }
+        });
+    };//fim
      
     //insere valor
     function updateValorTotal(valor) {
@@ -18,9 +36,18 @@
         }
         return valorTotal;
     }//function
+
+    //remove um item do array
+    function removeItemArrayPallet(item) {
+        var i = arrayPallets.indexOf(item);
+        if(i != -1) {
+            arrayPallets.splice(i, 1);
+        }
+        return arrayPallets;
+    };//fim
      
     //retorna valor total do pallet
-    function totalValuePallets(){
+    function totalValuePallets() {
        var valor = 0;
        for(index in valorTotal){
             valor = parseFloat(valorTotal[index])+valor;
