@@ -1,5 +1,8 @@
  <script type="text/javascript">
 
+    /*
+    * return the pallet value
+    */
     function getValuePallet(id, callback) {
         var valor = null;
         $.ajax({
@@ -18,7 +21,7 @@
     };//fim
       
     $(document).ready(function () {
-        
+        //return all master per pallet
         $(".getPallets").click(function () {
             var link = $(this).attr('href');
             $("#modal-body-principal").load(link, function (){
@@ -27,21 +30,32 @@
             return false;
         });
 
+        //insert the current index pallet in the array
         $(".btnincluir").click(function (){
+            var elemento = $(this);
             var row = $(this).closest('tr').index();
-            $(this).removeClass('btn-primary');
-            $(this).addClass('btn-success');
             var pallet = $(this).attr("id");
             var total = addPallets(pallet);
-            
             getValuePallet(pallet, function (res) {
                 updateValorTotal(res);
                 var valorAtualizado = totalValuePallets();
                 console.log('valorAtualizado ' , valorAtualizado);
-                $("#totalValue").html("<h3>Total R$: "+parseFloat(valorAtualizado)+"</h3>");
+                       
+                //if response value is bigger the limite value can do nothing
+                if(valorAtualizado < valorLimite){
+                    $(elemento).removeClass('btn-primary');
+                    $(elemento).addClass('btn-success');
+                    
+                    $("#totalValue").html("<h3>Total R$: "+parseFloat(valorAtualizado)+"</h3>");   
+
+                   
+                } else {  
+                    $("#divInfoLimite").show('slow', function (){
+                        $(this).html('O valor total dos pallets R$: '+ valorAtualizado + 
+                            " ultrapassa o valor limite do trajeto selecionado R$: "+valorLimite);
+                    });
+                }
             });
-           
-            
         });
     });
 </script>

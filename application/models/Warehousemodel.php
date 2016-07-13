@@ -132,6 +132,64 @@
 	 		return $this->db->get();
 		}//fim
 
+		/**
+		* @author rivail santos
+		* @param $idpallet - pallet_id
+		* @param $local - ['current', 'destiny']
+		* updates all values from pallet, passing by masters and imeis
+		*/
+		public function updateAllByPallet($idpallet, $local)
+		{
+			//start the transaction
+			$this->db->trans_begin();
+			
+				$this->db->where('id', $idpallet);
+				$response = $this->db->update('pallet', $pallet);
+				
+				//generate update to all master where pallet_id = $idpallet;
+				$updateMaster = "update master set warehouse_current = ".$local['current'].", 
+								warehouse_destiny = ".$local['destiny']." where pallet_id = ".$idPallet;
+				$masterResponse = $this->db->query($updateMaster);
+				
+				//get all master by the $idpallet
+				$masters = $this->db->get_where('master', array('pallet_id'=>$idpallet));
+				
+				//generate update to all imeis by each master_id
+				foreach ($master->result() as $index => $row) {
+					$master['warehouse_current'] = $local['current'];
+					$master['warehouse_destiny'] = $local['destiny'];
+					$this->db->where('master_id', $row->id);
+					$this->db->update('imei', $master);
+				}
+
+			$this->db->trans_complete();
+			
+			if($this->db->trans_status() != FALSE)
+			{
+				$this->db->trans_commit();
+				return true;
+			}	
+			else
+			{
+				 $this->db->trans_rollback();
+				return false;
+			}
+		}
+
+		/**
+		* @author rivail santos
+		* @param $objeto ['destino', 'origem']
+		* return the limit value of the travel
+		*/
+		public function returnLimits($objeto)
+		{
+			$this->db->select('limite');
+			$this->db->from('warehouse_limits');
+			$this->db->where('warehouse_origin_id', $objeto['origem']);
+			$this->db->where('warehouse_target_id', $objeto['destino']);
+			return $this->db->get();
+		}//fim
+
 	}//fim class
 
  ?>

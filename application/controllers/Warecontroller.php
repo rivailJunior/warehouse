@@ -24,6 +24,7 @@
 		*/
 		public function index($id = null)
 		{
+			$this->data['warehouses'] = $this->db->get('warehouse');
 			$this->load->view('index', $this->data);
 			$this->load->view('ware/index', $this->data);
 			$this->load->view('footer', $this->data);
@@ -69,13 +70,33 @@
 			$this->load->view('ware/modalcontainer', $this->data);
 		}//fim
 		 
-        
+        /**
+		* @author rivail santos
+		* return the value by pallet id
+        */
 		public function getValuePallet()
 		{
 			$pallet = $this->input->post('pallet');
 			$valor = $this->warehousemodel->getPalletValue($pallet);
 			echo $valor->row()->total;
-		}
+		}//fim
+
+
+		public function getLimitByWare()
+		{
+			$destino = $this->input->post('destino');
+			$origem = $this->input->post('origem');
+				
+			if(isset($origem) && isset($destino))
+			{
+				if($origem != $destino){
+					$objeto['origem'] = $origem;
+					$objeto['destino'] = $destino;
+					$response = $this->warehousemodel->returnLimits($objeto);
+					echo $response->row()->limite;	
+				}
+			}
+		}//fim
 
 	}//fim class
 
