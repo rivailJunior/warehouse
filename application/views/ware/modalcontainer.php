@@ -9,6 +9,39 @@
         }
     }//fim
 
+    var returnValorTotalMaster = function(url, cb) {
+        $.ajax({
+            url:url,
+            type:"post",
+            success:function (res){
+
+                cb(res);
+            },
+            error:function (error){
+                cb(error);
+            }
+        })
+    };//fim
+
+    function finishTransferByMaster(masters, cb) {
+        $.ajax({
+            url:"<?php echo site_url('warecontroller/finishTransferByMaster')?>",
+            type:"post",
+            data:{
+                'masters': masters,
+                'origem':$('.origem').val(),
+                'destino':$('.destino').val()
+            },
+            success:function(res){
+                cb(res);
+            },
+            error:function(err){
+                cb(err);
+                //console.log(err);
+            }
+        });
+    }//fim
+
     $(document).ready(function (){
         //retorna o pallet do qual o panel pertence
         var item =  $('.panel-group').attr("id").split('_')[1];
@@ -16,6 +49,7 @@
 
         $(".btnAddMaster").click(function (){
             var elemento = $(this),
+            arrayHelp =  [], 
             pallet = $(this).attr("id").split('_')[0],
             master = $(this).attr("id").split('_')[1],
             origem = $('.origem').val(),
@@ -23,24 +57,40 @@
             if((origem > 0) && (destino > 0) && (origem != destino)){
                 $(elemento).removeClass('btn-primary');
                 $(elemento).addClass('btn-success');
-                addMasters(master, pallet);    
+                returnValorTotalMaster(elemento.attr("href"), function (res, err) {
+                   updateValorTotal(res);
+                   totalValuePallets();
+                   $("#spanValorTotalMaster").html("R$: "+parseFloat(totalValuePallets())+" ");
+                });
+                addMasters(master); 
             }else{
                 mensagem("info", "Verifique se origem e destino estão selecionados!", "ATENÇÃO!");
             }
+            return false;
         });
 
-        $("#finalizarMaster").click(function (){
+        $("#finalizarMaster").click(function () {
            var origem = $(".origem").val(),
            destino = $('.destino').val();
+        
            if((origem > 0) && (destino > 0) && (origem != destino)){
-                if(arrayMasters.lenght > 0){
+                if(arrayMasters.length > 0){
+                    finishTransferByMaster(arrayMasters, function(res, err){
+                        if(res == true){
+                            mensagem("success", "Transferencia de master realizada com sucesso!", "SUCESSO!");
+                            setTimeout(function(){ window.location.reload(); }, 4000);
 
+                        } else {
+                            mensagem("success", "Transferencia de master realizada com sucesso!", "SUCESSO!");
+                        }
+                    }) 
                 }else{
                     mensagem('info', 'Nenhum item foi selecionado!', 'ATENÇÃO!');
                 }
-           }else{
-                
-           }
+           } else {
+                 mensagem('info', 'Primeiro selecione origem e destino e depois os itens necessarios!', 'ATENÇÃO!');
+           }    
+        
         });
     });
 </script>
@@ -55,10 +105,11 @@
                     <a role="tab" id="headingOne" data-toggle="collapse" data-parent="#accordion" 
                     href="<?php echo "#collapse".$i; ?>">
                     <label><?php echo "Codigo do master: ".$row->master_code;?></label></a>
-                    <button class="btn btn-primary btnAddMaster" 
+                    <a class="btn btn-primary btnAddMaster" 
+                    href="<?php echo site_url('warecontroller/getValueMaster/'.$row->master)?>"
                     id="<?php echo $row->pallet."_".$row->master;?>">
                     <i class="glyphicon glyphicon-ok"></i>
-                    Adicionar Master</button> 
+                    Adicionar Master</a> 
             </div>
         
             <div id="<?php echo "collapse".$i; ?>" class="panel-collapse collapse" role="tabpanel" 

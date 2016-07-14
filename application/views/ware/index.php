@@ -86,20 +86,15 @@
     };//fim
 
     //adiciona items no array de master
-    function addMasters(master, pallet) { 
+    function addMasters(master) { 
      var origem = $(".origem").val(),
         destino = $('.destino').val();
+
         if((origem == 0) || (destino == 0)) {
-           // alert('selecione percurso a ser transportado!');
             mensagem("info", "ATENÇÃO","Selecione percurso a ser feita a transeferncia");
         } else {         
-            if(verifyItem(pallet, arrayPallets) == false) {
-                var data = {
-                pallet: pallet,
-                master:master
-                };    
-                arrayMasters.push(data);
-                console.log(arrayMasters);
+            if(verifyItem(master, arrayMasters) == false) {
+                arrayMasters.push(master);
                 mensagem("success","Master "+master+" foi adicionado.", "SUCESSO!");
             }
         }
@@ -155,6 +150,7 @@
         $(".origem").change(function (){
             var destino = $(this).val();
             var origem = $(".destino").val();
+
             if((origem != 0) && (destino != 0)){
                 $.ajax({
                     url:"<?php echo site_url('warecontroller/getLimitByWare')?>",
@@ -194,12 +190,12 @@
                         <option value="0">Selecione</option>
                         <?php 
                             if ($warehouses->num_rows() > 0) {
-                                foreach ($warehouses->result() as $index => $row) {
-                                $selected = $row->id == 13 ? "selected" : " ";
                          ?>
-                            <option <?php echo $selected;?> value="<?php echo $row->id;?>"><?php echo $row->label;?></option>
-                         <?php
-                                }
+                         <option selected="" value="<?php echo $warehouses->row()->id;?>">
+                             <?php echo $warehouses->row()->label;?>
+                         </option>
+                          
+                        <?php
                             }
                          ?>
                     </select>

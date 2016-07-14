@@ -67,12 +67,11 @@
             if((origem == 0) || (destino == 0) || (origem == destino)) {
                  mensagem("info", "Selecione percurso a ser feita a transeferncia.", "ATENÇÃO");
             } else {
-                if(arrayPallets.lenght > 0 ) {
+                if(arrayPallets.length > 0 ) {
                     realizarTransferencias(origem, destino, function (res, err){
                         if(res == true){
                             mensagem("success", "Transferencia realizada com sucesso!", "SUCESSO");
-                            var url = "<?php echo site_url('warecontroller/getPallets')?>";
-                            $("#card-body-principal").load(url);
+                            setTimeout(function(){ window.location.reload(); }, 4000);
                         }else{
                             mensagem("error", "Erro ao realizar transferencia.", "ATENÇÃO");
                         }
@@ -139,6 +138,7 @@
             <div class="modal-header">
                 <button type="button" class="btn btn-default " data-dismiss="modal">Fechar</button>    
                 <button type="button" id="finalizarMaster" class="btn btn-success ">Salvar</button>
+                <h4 id="spanValorTotalMaster" class="pull-right">R$: 00.00</h4>
             </div>
             <!--/modal body-->
             <div class="modal-body" >

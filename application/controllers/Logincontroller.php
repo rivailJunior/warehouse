@@ -48,7 +48,7 @@
 		        		$sess_array = array(
 		        			'nome' => $row->nome,
 		        			'id'=>$row->id,
-		        			'status'=>$row->status,
+		        			'status'=>$row->perfil,
 		        			'login'=>$row->login
 		        			);
 		        		$this->session->set_userdata('usuariologado', $sess_array);

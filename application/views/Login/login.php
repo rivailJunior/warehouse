@@ -29,11 +29,11 @@
                     <div class="col-sm-12 text-center login-header"><!-- 
                         <i class="login-logo fa fa-connectdevelop fa-5x"></i> -->
                         <h3 class="login-title">Painel Login</h3>
-                        <h5 class="login-title">Lucrativa Administrativo</h5>
+                        <h5 class="login-title">Warehouse System</h5>
                     </div>
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">
+                    <div class="col-md-6 col-md-offset-3">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
                                 <div class="card-title">
                                 <div class="title">Login</div>
                                 <p>Entre com login e senha.</p>
@@ -45,7 +45,7 @@
                                 </div>
                                 <div class="clear-both"></div>
                             </div>
-                            <div class="card-body">
+                            <div class="panel-body">
                                 <div class="text-indent">
                                     
                                 <p class="text-center"><?php echo validation_errors('<a class="error">', '</a>'); ?></p>
@@ -66,7 +66,10 @@
                                             name="senha" value="<?php echo set_value('senha') ?>">
                                         </div>
                                         <div class="">
-                                            <p class="text-center"><button id="btlogar" class="btn btn-success">Logar</button></p>
+                                            <label> </label>
+                                            <p class="text-center">
+                                            <button id="btlogar" class="btn btn-success">Logar</button>
+                                            </p>
                                         </div>
                                     </div>
                                 </form>

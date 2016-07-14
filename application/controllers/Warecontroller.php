@@ -27,6 +27,7 @@
 		*/
 		public function index($id = null)
 		{
+			$this->data['usuario'] = $this->session->userdata('usuariologado');
 			$this->data['warehouses'] = $this->db->get('warehouse');
 			$this->load->view('index', $this->data);
 			$this->load->view('ware/index', $this->data);
@@ -142,6 +143,55 @@
 
 			echo $response; 
 		}//fim
+
+		//retorna valor total por master
+		public function getValueMaster($master)
+		{
+			$valor = $this->warehousemodel->getMasterValue($master);
+			echo $valor->row()->valor;
+		}//fim function
+
+
+		public function finishTransferByMaster()
+		{
+			$masters = $this->input->post('masters');
+			$destino = $this->input->post('destino');
+			$origem = $this->input->post('origem');
+			
+			$local['current'] = $origem;
+			$local['destiny'] = $destino;
+				
+			//objeto para criacao de log
+			$log['descricao'] = "Log para teste itriad system";
+			$log['id_usuario'] = 1;
+			$log['acao'] = "Transferencia de carga";
+			$log['created_at'] = $objeto['created_at'];
+			$log['id_origem'] = $origem;
+			$log['id_destino'] = $destino;
+			$log['created_at'] = date('y-m-d');
+			$objeto['created_at'] = date('y-m-d');
+			$objeto['id_log'] =  $this->warehousemodel->generateLog($log);
+			$response = null;
+			
+			foreach ($masters as $index => $master) {
+				$res = $this->warehousemodel->realizeTransferByMaster($master, $local, $objeto);
+				if(!$res){
+					$response = false;
+				}else{
+					$response = true;
+				}
+			}
+			echo $response;
+		}//fim function
+
+
+		public function logs()
+		{
+			$this->data['logs'] = $this->db->get('transfer_log');
+			$this->load->view('index', $this->data);
+			$this->load->view('ware/logs', $this->data);
+			$this->load->view('footer', $this->data);
+		}
 
 	}//fim class
 
