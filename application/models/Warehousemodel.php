@@ -31,8 +31,8 @@
 				$this->db->insert('pallet', $pallet);
 				$idPallet[$i] = $this->db->insert_id();
 
-				//inserer 100 master por pallets
-				for($m = 0; $m < 100; $m++) {
+				//inserer 10 master por pallets
+				for($m = 0; $m < 10; $m++) {
 					//inserer os masters
 					$master['warehouse_current'] = $idWare;
 					$master['warehouse_destiny'] = null;
@@ -42,8 +42,8 @@
 					$this->db->insert('master', $master);
 					$idMaster[$m] = $this->db->insert_id();
 
-					//insere 10 produtos por master
-					for($im = 0; $im < 10; $im++) {
+					//insere 5 produtos por master
+					for($im = 0; $im < 5; $im++) {
 
 						//insere os produtos		
 						$valor = rand(500, 3000);
@@ -216,19 +216,20 @@
 				//gera log para o pallet
 				$pallet_log['id_log'] = $objeto['id_log'];
 				$pallet_log['created_at'] = $objeto['created_at'];
-				$pallet_log['id_pallet'] = $objeto['pallet_id'];
+				$pallet_log['id_pallet'] = $pallet;
 				$this->db->insert('transfer_log_pallet', $pallet_log);
 				$idpalletlog = $this->db->insert_id();
 
-				$masterList = $this->db->get_where('master', array('pallet_id' => $objeto['pallet_id']));
+				$masterList = $this->db->get_where('master', array('pallet_id' => $pallet));
 				foreach ($masterList->result() as $index => $master) {
 					//gera o log para o master
 					$master_log['id_master'] = $master->id;
 					$master_log['id_log_pallet'] = $idpalletlog;
 					$master_log['created_at'] = $objeto['created_at'];
-					$idmasterlog = $this->db->insert('transfer_log_master', $master_log);
-
-					$listImeis = $this->db->get_where('imei', array('master_id'=>$row->id));
+					$this->db->insert('transfer_log_master', $master_log);
+					$idmasterlog = $this->db->insert_id();
+						
+					$listImeis = $this->db->get_where('imei', array('master_id'=>$master->id));
 					foreach ($listImeis->result() as $position => $imei) {
 						//gera log para o imei
 						$imei_log['id_log_master'] = $idmasterlog;

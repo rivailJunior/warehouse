@@ -15,9 +15,32 @@
         printPanel(item);
 
         $(".btnAddMaster").click(function (){
-            var pallet = $(this).attr("id").split('_')[0];
-            var master = $(this).attr("id").split('_')[1];
-            addMasters(master, pallet); 
+            var elemento = $(this),
+            pallet = $(this).attr("id").split('_')[0],
+            master = $(this).attr("id").split('_')[1],
+            origem = $('.origem').val(),
+            destino = $('.destino').val();
+            if((origem > 0) && (destino > 0) && (origem != destino)){
+                $(elemento).removeClass('btn-primary');
+                $(elemento).addClass('btn-success');
+                addMasters(master, pallet);    
+            }else{
+                mensagem("info", "Verifique se origem e destino estão selecionados!", "ATENÇÃO!");
+            }
+        });
+
+        $("#finalizarMaster").click(function (){
+           var origem = $(".origem").val(),
+           destino = $('.destino').val();
+           if((origem > 0) && (destino > 0) && (origem != destino)){
+                if(arrayMasters.lenght > 0){
+
+                }else{
+                    mensagem('info', 'Nenhum item foi selecionado!', 'ATENÇÃO!');
+                }
+           }else{
+                
+           }
         });
     });
 </script>
@@ -33,7 +56,9 @@
                     href="<?php echo "#collapse".$i; ?>">
                     <label><?php echo "Codigo do master: ".$row->master_code;?></label></a>
                     <button class="btn btn-primary btnAddMaster" 
-                    id="<?php echo $row->pallet."_".$row->master;?>">Add</button> 
+                    id="<?php echo $row->pallet."_".$row->master;?>">
+                    <i class="glyphicon glyphicon-ok"></i>
+                    Adicionar Master</button> 
             </div>
         
             <div id="<?php echo "collapse".$i; ?>" class="panel-collapse collapse" role="tabpanel" 

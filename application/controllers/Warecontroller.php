@@ -15,8 +15,8 @@
 		{
 			parent::__construct();
 			$this->load->model('warehousemodel');
-			if(!isset($this->session->userdata('usuariologado'))){
-				redirect('/logincontroller/logout_user');
+			if(!($this->session->userdata('usuariologado'))){
+				redirect('/logincontroller/');
 			}
 		}
 		
@@ -27,7 +27,6 @@
 		*/
 		public function index($id = null)
 		{
-			print_r($this->session->userdata('usuariologado'));
 			$this->data['warehouses'] = $this->db->get('warehouse');
 			$this->load->view('index', $this->data);
 			$this->load->view('ware/index', $this->data);
@@ -54,7 +53,7 @@
 		public function generator($total = null)
 		{
 			if(isset($total)){
-				$this->warehousemodel->generateData($total);	
+				echo $this->warehousemodel->generateData($total);	
 			}
 			else {
 				$this->index();
@@ -125,16 +124,23 @@
 			
 			$local['current'] = $objeto['current'];
 			$local['destiny'] = $objeto['destiny'];
-			
+			$response = null;
 			foreach ($pallets as $index => $pallet) {
 				$objeto['pallet_id'] = $pallet; 
 				$objeto['id_log'] = $idlog;
-				$return = $this->warehousemodel->updateAllByPallet($pallet, $local, $objeto);
-				echo $return;
+				$res = $this->warehousemodel->updateAllByPallet($pallet, $local, $objeto);
+				if(!$res){
+					$response = null;
+				}else{
+					$response = true;
+				}
 			}
+			
 			foreach ($pallets as $index => $pallet) {
 				$logs = $this->warehousemodel->generateAllLogs($objeto, $pallet);
 			}
+
+			echo $response; 
 		}//fim
 
 	}//fim class

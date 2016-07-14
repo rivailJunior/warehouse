@@ -1,5 +1,4 @@
  <script type="text/javascript">
-
     /*
     * return the pallet value
     */
@@ -35,7 +34,8 @@
             var elemento = $(this),
             row = $(this).closest('tr').index(),
             pallet = $(this).attr("id");
-            
+            var origem = $('.origem').val(),
+            destino = $('.destino').val();
             //adiciona item no arrayPallet
             addPallets(pallet);
         
@@ -48,11 +48,13 @@
                     $(elemento).addClass('btn-success');
                     $("#totalValue").html("<h3>Total R$: "+parseFloat(valorAtualizado)+"</h3>"); 
                     
-                } else {  
-                    $("#divInfoLimite").show('slow', function (){
+                } else {
+                    if((origem > 0) && (destino > 0) && (origem != destino)){
+                        $("#divInfoLimite").show('slow', function () {
                         $(this).html('O valor total dos pallets R$: '+ valorAtualizado + 
                             " ultrapassa o valor limite do trajeto selecionado R$: "+valorLimite);
-                    });
+                        });    
+                    }
                     //remove esse item do arrayPallet
                     removeItemArrayPallet(pallet); 
                 }
@@ -62,10 +64,23 @@
         $("#btFinalizar").click(function (){
             var destino = $('.destino').val(),
             origem = $('.origem').val();
-            if((origem == 0) || (destino == 0) || (origem == destino)){
-                alert('verifique origem e destino');
-            }else{
-                realizarTransferencias(origem, destino);
+            if((origem == 0) || (destino == 0) || (origem == destino)) {
+                 mensagem("info", "Selecione percurso a ser feita a transeferncia.", "ATENÇÃO");
+            } else {
+                if(arrayPallets.lenght > 0 ) {
+                    realizarTransferencias(origem, destino, function (res, err){
+                        if(res == true){
+                            mensagem("success", "Transferencia realizada com sucesso!", "SUCESSO");
+                            var url = "<?php echo site_url('warecontroller/getPallets')?>";
+                            $("#card-body-principal").load(url);
+                        }else{
+                            mensagem("error", "Erro ao realizar transferencia.", "ATENÇÃO");
+                        }
+                    });    
+                }else{
+                    mensagem("info", "Nenhum item foi adicionado.", "ATENÇÃO");
+                }
+                
             }
         });
     });
@@ -120,17 +135,18 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                 <h4 class="modal-title">Masters</h4>
             </div>
+            <!---modal body-->
+            <div class="modal-header">
+                <button type="button" class="btn btn-default " data-dismiss="modal">Fechar</button>    
+                <button type="button" id="finalizarMaster" class="btn btn-success ">Salvar</button>
+            </div>
             <!--/modal body-->
             <div class="modal-body" >
                  <div class="row" id="modal-body-principal">
                      
                  </div>
             </div>
-            <!---modal body-->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary">Salvar</button>
-            </div>
+            
         </div>
     </div>
 </div>

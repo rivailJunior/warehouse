@@ -19,6 +19,10 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="<?php echo base_url('/assets/js/jquery-1.10.2.min.js') ?>"></script>
     <script src="<?php echo base_url('/assets/bootstrap/js/bootstrap.min.js ') ?>"></script>
+
+    <link href="<?php echo base_url('/assets/toastr-master/build/toastr.css') ?>" rel="stylesheet"/>
+    <script type="text/javascript" src="<?php echo base_url('/assets/toastr-master/build/toastr.min.js') ?>">
+    </script>
     <style type="text/css" media="screen">
       body {
         padding-top: 70px;

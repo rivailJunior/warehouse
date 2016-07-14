@@ -10,7 +10,37 @@
         return array.includes(item);
     }//fim
 
-    function realizarTransferencias(origem, destino) {
+    //mostra toast de mensagens
+    function mensagem(type, title, text) {
+        toastr.options = {
+          "closeButton": true,
+          "debug": false,
+          "newestOnTop": false,
+          "progressBar": true,
+          "positionClass": "toast-top-right",
+          "preventDuplicates": true,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": "2000",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+        }
+        if(type == 'success'){
+            toastr.success(title, text, {timeOut: 4000});
+        }
+        if(type == "error"){
+            toastr.error(title, text, {timeOut: 4000});
+        }
+        if(type == "info"){
+            toastr.info(title, text, {timeOut: 4000});
+        } 
+    };//fim
+
+    function realizarTransferencias(origem, destino, callback) {
         $.ajax({
             url:"<?php echo site_url('warecontroller/finishTransfer')?>",
             type:"post",
@@ -20,10 +50,10 @@
                 'destino':destino
             },
             success:function (res){
-                console.log("res", res);
+                callback(res);
             },
-            error:function(err){
-                console.log("err", err);
+            error:function(err) {
+                callback(err);
             }
         });
     };//fim
@@ -60,7 +90,8 @@
      var origem = $(".origem").val(),
         destino = $('.destino').val();
         if((origem == 0) || (destino == 0)) {
-            alert('selecione percurso a ser transportado!');
+           // alert('selecione percurso a ser transportado!');
+            mensagem("info", "ATENÇÃO","Selecione percurso a ser feita a transeferncia");
         } else {         
             if(verifyItem(pallet, arrayPallets) == false) {
                 var data = {
@@ -68,8 +99,8 @@
                 master:master
                 };    
                 arrayMasters.push(data);
-            } else {
-                alert('Esse pallet foi selecionado por completo');  
+                console.log(arrayMasters);
+                mensagem("success","Master "+master+" foi adicionado.", "SUCESSO!");
             }
         }
         return arrayMasters;
@@ -80,11 +111,12 @@
         var origem = $(".origem").val(),
         destino = $('.destino').val();
         if((origem == 0) || (destino == 0)){
-            alert('selecione percurso a ser transportado!');
+            mensagem("info", "Primeiro selecione o percurso a realizar o transporte", "ATENÇÃO!");
         }else{
             if(verifyItem(item, arrayPallets) == false) {
                 arrayPallets.push(item); 
                 panelHeader.push(item);
+                mensagem("success", "Pallet "+item+" foi adicionado a lista", "SUCESSO!");
             }
         }
         return arrayPallets;
